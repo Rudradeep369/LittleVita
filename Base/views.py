@@ -146,6 +146,9 @@ def home(request):
     context['answer'] = answer
     if request.method == "POST":
         ask = request.POST.get('question')
+        image = request.POST.get('attachment')
+        print(image)
+        print(type(image))
         response = model.generate_content(f"""
                 I am an AI developed for a website named LittleVita, a platform dedicated to managing children's vaccination schedules and providing information about newborn baby health. 
                 I can provide information about adding children, managing their vaccination schedules, tracking their vaccination status, and searching for information about nutrition, diseases, doctors, and vaccines specifically for newborn babies. 

@@ -165,12 +165,25 @@
             <h2>Chatbot</h2>
         </div>
         <div class="chat-window" id="chatWindow">
+            <div class="welcome-msg">
+                <p>Welcome! How can I help you today?</p>
+                <i class="bi bi-emoji-smile-fill welcome-smile"></i>
+            </div>
             <!-- Chat messages will be appended here -->
+            <div class="window" id='window'>
+                <div class="chat-box" id="chat-box"></div>
+
+                <div class="chat-loader"></div>
+            </div>
         </div>
         <form action="" method="post" id='myForm'>{% csrf_token %}
             <div class="chat-input">
                 <input type="text" id="userInput" name='question' placeholder="Type your message...">
-                <button id="sendButton"> 
+                <label for="fileInput">
+                    <i class="bi bi-paperclip attachment-icon"></i>
+                </label>
+                <input type="file" id="fileInput" name="attachment" style="display: none;">
+                <button id="sendButton" class='btn'> 
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
                     </svg>    
@@ -205,42 +218,65 @@
                 e.preventDefault(); // Prevent default form submission
                 // Serialize form data
                 var formData = $(this).serialize();
-                var question = document.getElementById('userInput');
-                // console.log(question)
+                var question = document.getElementById('userInput').value;
+                // console.log('Question',question)
+
+                const chatBox= document.getElementById('chat-box');
+                const userMessageElement = document.createElement('p');
+                userMessageElement.classList.add('user-message');
+                userMessageElement.textContent = 'User: ' + question;
+                chatBox.appendChild(userMessageElement);
+                const userInput = document.getElementById('userInput');
+                userInput.value = '';
+
                 // Send AJAX request
                 $.ajax({
                     type: 'POST',
                     url: '{% url "home" %}',
                     data: formData,
+                    beforeSend: function() {
+                        // Show loader
+                        $('.chat-loader').show();
+                    },
                     success: function(response) {
                         // Get input field and chat window elements
                         const userInput = document.getElementById('userInput');
                         const sendButton = document.getElementById('sendButton');
-                        const chatWindow = document.getElementById('chatWindow');
+                        const chatBox = document.getElementById('chat-box');
                         // Handle success response
-                        console.log(response.answer);
-                        const userMessage = userInput.value;
-                        if (userMessage) {
-
-                            const userMessageElement = document.createElement('pre');
-                            userMessageElement.classList.add('user-message');
-                            userMessageElement.textContent = 'User: ' + userMessage;
-                            chatWindow.appendChild(userMessageElement);
-
-                            // Clear input field
-                            userInput.value = '';
-                        
+                        const answer = response.answer;
+                        console.log(answer);
+                        if (answer) {
                             const botMessageElement = document.createElement('p');
                             botMessageElement.classList.add('bot-message');
                             botMessageElement.innerText = response.answer;
-                            chatWindow.appendChild(botMessageElement);
+                            chatBox.appendChild(botMessageElement);
                             let line= document.createElement('hr');
-                            chatWindow.appendChild(line);
+                            chatBox.appendChild(line);
+
+                            // Disable the chat loader
+                            $('.chat-loader').hide();
+
+                            // Scroll to the latest response
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                    
                         }
                     },
                     error: function(xhr, status, error) {
                         // Handle error
                         console.error(xhr.responseText);
+                        const botMessageElement = document.createElement('p');
+                        botMessageElement.classList.add('bot-message');
+                        botMessageElement.innerText = "Something went wrong. Please try again later.";
+                        chatBox.appendChild(botMessageElement);
+                        let line= document.createElement('hr');
+                        chatBox.appendChild(line);
+
+                        // Disable the chat loader
+                        $('.chat-loader').hide();
+
+                        // Scroll to the latest response
+                        chatBox.scrollTop = chatBox.scrollHeight;
                     }
                 });
             });

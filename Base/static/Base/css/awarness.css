@@ -164,7 +164,10 @@ body {
   cursor: pointer;
   transition: 0.3s;
 }
-
+.awarness-image{
+  min-height: 30vh;
+  max-height: 30vh;
+}
 .class__card .class__bg {
   position: absolute;
   max-width: 175px;
