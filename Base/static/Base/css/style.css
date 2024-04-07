@@ -29,10 +29,12 @@ body{
   width: 100%;
   transition: top 0.3s;
   z-index: 1000;
-  box-shadow: #333 0px 0px 6px;
+  padding: 0;
+  /* box-shadow: #333 0px 0px 6px; */
+  background-color: rgb(246, 254, 255) !important;
 }
 
-.navbar.hide {
+.hide {
   top: -100px;
 }
 a.activate {
@@ -96,4 +98,80 @@ button.cancel-message {
   border-radius: 3px;
   cursor: pointer;
   margin-left: 20px;
+}
+
+.logo-image{
+  /* width: 100px; */
+  height: 50px;
+  margin: 0 auto;
+  display: block;
+}
+
+
+
+
+/* Loader  */
+
+
+.skeleton-loader {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 999999;
+    background: white;
+    scroll-behavior: smooth;
+}
+
+.skeleton-thumbnail {
+  width: 210px;
+  height: 118px;
+  background: #ddd;
+  border-radius: 4px;
+}
+.skeleton-nav{
+  height: 40px;
+  margin-bottom: 10px;
+  background: #ddd;
+  border-radius: 4px;
+}
+
+.skeleton-details {
+  flex-grow: 1;
+  margin-left: 20px;
+  width: 70vw;
+}
+.sekeleton-item{
+  display: flex;
+  width: 90vw;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+.skeleton-elments{
+  top: 35%;
+  position: absolute;
+}
+
+.skeleton-line {
+  height: 20px;
+  background: #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.skeleton-thumbnail,
+.skeleton-line,
+.skeleton-nav {
+  animation: shimmer 1s linear infinite alternate;
+}
+
+@keyframes shimmer {
+  0% {
+      background-color: hsl(200, 20%, 70%);
+  }
+  100% {
+      background-color: hsl(200, 20%, 95%);
+  }
 }
