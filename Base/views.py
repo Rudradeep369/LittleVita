@@ -12,6 +12,9 @@ from .models import Parent, Child, Disease, Doctor, Nutrition, Vaccine, VaccineS
 from decouple import config
 from datetime import date, datetime
 import json
+from django.core.files.storage import FileSystemStorage
+import pathlib
+import PIL.Image as Image
 
 # Set the Gemini API key
 GOOGLE_API_KEY=config('GOOGLE_API_KEY')
@@ -145,25 +148,57 @@ def home(request):
     answer = "Hi, Mom! I am here to help you. Ask me anything."
     context['answer'] = answer
     if request.method == "POST":
-        ask = request.POST.get('question')
-        image = request.POST.get('attachment')
-        print(image)
-        print(type(image))
-        response = model.generate_content(f"""
-                I am an AI developed for a website named LittleVita, a platform dedicated to managing children's vaccination schedules and providing information about newborn baby health. 
-                I can provide information about adding children, managing their vaccination schedules, tracking their vaccination status, and searching for information about nutrition, diseases, doctors, and vaccines specifically for newborn babies. 
-                I can help you find doctors and hospitals Who are not associated with our platform, LittleVita.
-                I can alsoo provide about website registration and login and opening any tab.  
-                However, I can't provide information that is not related to our website or baby upto healthcare. 
-                User's question: {ask}
-                """)
-        print(response.text)
+        prompt = request.POST.get('question')
+        print(prompt)
+        image = request.FILES.get('attachment')
+        
+        try:
+            if image:
+                image_model = genai.GenerativeModel('gemini-pro-vision')
+                print('image response')
+                fs=FileSystemStorage()
+                filename=fs.save(image.name, image)
+                # uploaded_file_url=fs.url(filename)
+                uploaded_file_path=fs.path(filename)
+                img = Image.open(uploaded_file_path)
+                # print(uploaded_file_url)
+                # disease_image = genai.Image.from_file(uploaded_file_url)
 
-        # print(completion)
-        answer = (response.text)
-        context['answer'] = answer
-        context['ask'] = ask 
-        return JsonResponse({'answer': answer})
+                custome_prompt = f"""
+                    I am an AI developed for a website named LittleVita, a platform dedicated to managing children's vaccination schedules and providing information about newborn baby health. 
+                    I can provide information about adding children, managing their vaccination schedules, tracking their vaccination status, and searching for information about nutrition, diseases, doctors, and vaccines specifically for newborn babies.
+                    I can help you find doctors and hospitals Who are not associated with our platform, LittleVita.
+                    I can alsoo provide about website registration and login and opening any tab.
+                    However, I can't provide information that is not related to our website or baby upto healthcare.
+                    I can't respond to images that is not related to health care.
+                    User's question: {prompt}
+                    """
+                response = image_model.generate_content([custome_prompt,img],stream=True)
+                response.resolve()
+
+                # delete the image after processing
+                pathlib.Path(uploaded_file_path).unlink() 
+
+            else:
+                print('text response')
+                response = model.generate_content(f"""
+                    I am an AI developed for a website named LittleVita, a platform dedicated to managing children's vaccination schedules and providing information about newborn baby health. 
+                    I can provide information about adding children, managing their vaccination schedules, tracking their vaccination status, and searching for information about nutrition, diseases, doctors, and vaccines specifically for newborn babies. 
+                    I can help you find doctors and hospitals Who are not associated with our platform, LittleVita.
+                    I can alsoo provide about website registration and login and opening any tab.  
+                    However, I can't provide information that is not related to our website or baby upto healthcare. 
+                    User's question: {prompt}
+                    """)
+            # print(response.text)
+
+            # print(completion)
+            answer = (response.text)
+            context['answer'] = answer
+            context['ask'] = prompt 
+            return JsonResponse({'answer': answer})
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return JsonResponse({'error': f'An error occurred. Please try again.'})
 
 
     return render(request, 'Base/home.html',  context)

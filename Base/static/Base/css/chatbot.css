@@ -135,7 +135,7 @@ div.window{
 .chat-input>label{
     background-color: rgba(10, 86, 105, 0.7);
     border-radius: 4px;
-    margin-left: 5px;
+    margin-right: 5px;
     align-items: center;
     display: flex;
 }
@@ -161,4 +161,14 @@ div.window{
 .attachment-icon:hover{
     color: #000;
     cursor: pointer;
+}
+
+.chat-image{
+    height: auto;
+    width: 200px;
+    align-self: center;
+}
+
+.error-message{
+    color: rgb(103, 16, 5);
 }

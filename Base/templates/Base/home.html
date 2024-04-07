@@ -178,11 +178,12 @@
         </div>
         <form action="" method="post" id='myForm'>{% csrf_token %}
             <div class="chat-input">
-                <input type="text" id="userInput" name='question' placeholder="Type your message...">
                 <label for="fileInput">
-                    <i class="bi bi-paperclip attachment-icon"></i>
+                    <i class="bi bi-file-earmark-image attachment-icon"></i>
+                    <i class="bi bi-check2-circle attachment-icon" style="display: none;"></i>
                 </label>
                 <input type="file" id="fileInput" name="attachment" style="display: none;">
+                <input type="text" id="userInput" name='question' placeholder="Type your message...">
                 <button id="sendButton" class='btn'> 
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
@@ -214,26 +215,61 @@
     <script src={% static "Base/js/chatbot.js" %}></script>
     <script>       
         $(document).ready(function() {
+            $('#fileInput').change(function() {
+                if ($(this).val() != '') {
+                    $('.bi-file-earmark-image').hide();
+                    $('.bi-check2-circle').show();
+                } else {
+                    $('.bi-file-earmark-image').show();
+                    $('.bi-check2-circle').hide();
+                }
+            });
+
             $('#myForm').submit(function(e) {
                 e.preventDefault(); // Prevent default form submission
-                // Serialize form data
-                var formData = $(this).serialize();
+                // Create a FormData object
+                var formData = new FormData(this);
+
                 var question = document.getElementById('userInput').value;
-                // console.log('Question',question)
+                var fileInput = document.getElementById('fileInput');
+
 
                 const chatBox= document.getElementById('chat-box');
                 const userMessageElement = document.createElement('p');
                 userMessageElement.classList.add('user-message');
                 userMessageElement.textContent = 'User: ' + question;
                 chatBox.appendChild(userMessageElement);
+
+                // If a file is selected, display it in the chat window
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var imgElement = document.createElement('img');
+                        imgElement.src = e.target.result;
+                        imgElement.classList.add('chat-image');
+                        chatBox.appendChild(imgElement);
+                    }
+
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+
                 const userInput = document.getElementById('userInput');
                 userInput.value = '';
+                fileInput.value = '';
+
+                // Reset the file icon to the first one
+                $('.bi-file-earmark-image').show();
+                $('.bi-check2-circle').hide();
 
                 // Send AJAX request
                 $.ajax({
                     type: 'POST',
                     url: '{% url "home" %}',
                     data: formData,
+                    contentType: false, // The content type used when sending data to the server.
+                    cache: false, // To unable request pages to be cached
+                    processData:false, // To send DOMDocument or non processed data file it is set to false
                     beforeSend: function() {
                         // Show loader
                         $('.chat-loader').show();
@@ -243,6 +279,7 @@
                         const userInput = document.getElementById('userInput');
                         const sendButton = document.getElementById('sendButton');
                         const chatBox = document.getElementById('chat-box');
+                        const window = document.getElementById('window');
                         // Handle success response
                         const answer = response.answer;
                         console.log(answer);
@@ -258,8 +295,23 @@
                             $('.chat-loader').hide();
 
                             // Scroll to the latest response
-                            chatBox.scrollTop = chatBox.scrollHeight;
+                            window.scrollTop = window.scrollHeight;
                     
+                        }
+                        else if(response.error){
+                            const botMessageElement = document.createElement('p');
+                            botMessageElement.classList.add('bot-message');
+                            botMessageElement.classList.add('error-message');
+                            botMessageElement.innerText = response.error;
+                            chatBox.appendChild(botMessageElement);
+                            let line= document.createElement('hr');
+                            chatBox.appendChild(line);
+
+                            // Disable the chat loader
+                            $('.chat-loader').hide();
+
+                            // Scroll to the latest response
+                            window.scrollTop = window.scrollHeight;
                         }
                     },
                     error: function(xhr, status, error) {
