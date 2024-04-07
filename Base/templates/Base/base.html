@@ -22,13 +22,31 @@
 
 </head>
 
-<body>
+<body onload="pageStart()">
 
+
+  <div class="skeleton-loader">
+    <div class="skeleton-nav"></div>
+
+    <div class="skeleton-elments">
+      {% for i in "abcd" %}
+      <div class="sekeleton-item">
+        <div class="skeleton-thumbnail"></div>
+        <div class="skeleton-details">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  
   {% comment %} Navbar {% endcomment %}
-
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href={% url "home" %} style="color: #FF4D7B;">LittleVita</a>
+    <a class="navbar-brand" href={% url "home" %} style="color: #FF4D7B;"><img src={% static "Base/media/projectLogo.png" %} alt="LittleVita" class='logo-image'></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

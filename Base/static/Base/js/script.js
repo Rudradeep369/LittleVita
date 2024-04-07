@@ -16,16 +16,34 @@ setTimeout(function () {
 	messageBox.style.display = 'none';
 }, 3000);
 
-// For the navbar to hide when scrolling down and show when scrolling up
-let lastScrollTop = 0;
-const navbar = document.querySelector('.navbar');
 
-window.addEventListener('scroll', () => {
-	const scrollTop = document.documentElement.scrollTop;
-	if (scrollTop < lastScrollTop) {
-		navbar.classList.remove('hide');
-	} else {
-		navbar.classList.add('hide');
-	}
-	lastScrollTop = scrollTop;
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    let lastScrollTop = 0;
+    const navbar = document.querySelector('.navbar');
+
+	// console.log("scrolling");
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        
+        if (scrollTop < lastScrollTop) {
+            navbar.classList.remove('hide');
+        } else {
+            navbar.classList.add('hide');
+        }
+        lastScrollTop = scrollTop;
+    });
 });
+
+
+
+
+
+
+function pageStart(){
+	// let load= document.body.querySelector(".loaderPageContainer");
+    // load.style.display='none';
+	const skeletonLoader = document.querySelector('.skeleton-loader');
+    skeletonLoader.style.display = 'none';
+
+}
