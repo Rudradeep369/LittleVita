@@ -6,12 +6,21 @@ body{
     margin: 0;
     padding: 0;
     color: #333;
+    background-color: rgb(246, 254, 255);
 }
 .navbar-nav .nav-item.dropdown:hover .nav-link,
 .navbar-nav .nav-item.dropdown.show .nav-link {
   color: #FF4D7B !important;
 }
 
+.nav-link{
+  color:rgb(55 133 140);
+  font-weight: 400;
+}
+.nav-link:hover{
+  transform: scale(1.1);
+  transition: 0.3s ease-in all;
+}
 .navbar-nav .nav-item.dropdown .dropdown-item.active,
 .navbar-nav .nav-item.dropdown .dropdown-item:active {
   background-color: #FF4D7B;
@@ -38,7 +47,7 @@ body{
   top: -100px;
 }
 a.activate {
-  color: #3c85d2 !important;
+  color: #508896 !important;
   font-weight: bold;
 }
 

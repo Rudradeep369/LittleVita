@@ -57,8 +57,7 @@ a {
 
 .s-header-bg {
   background-image: linear-gradient(to right,
-      #FF0044,
-      #FFD4E0),
+  #508896, #0c4e5a),
     url("assets/header.jpg");
   background-position: center center;
   background-size: cover;
