@@ -36,6 +36,27 @@
       </div>
     </li>
     {% endfor %}
+    {% for nutrition in gemini_nutritions %}
+    <li class="cards_item">
+      <div class="card" tabindex="0">
+        <div class="card_image"><img src={% static "Base/media/nutrition-default.jpg" %} alt="mixed vegetable salad in a mason jar. "></div>
+        <div class="card_content">
+          <h2 class="card_title">{{nutrition.nutrition_name|upper}}</h2>
+          <div class="card_text">
+            <p class="description">{{nutrition.description}}</p>
+            <p class="age-group"> <span class="title">Age-Group :</span> {{nutrition.age_group}}</p>
+            <p class="feeding-method"> <span class="title"> Feeding method:</span> {{nutrition.feeding_method}}</p>
+            <p class="feeding-method"> <span class="title"> Foods:</span> {% for food in nutrition.example_foods %}{{food}},&nbsp;{% endfor %}</p>
+
+            <p class="recomandation-for"> <span class="title">Recomandation for: </span>  {{nutrition.why_recommended}}{{nutrition.why_recomanded}} </p>
+            {% if nutrition.introduction_of_solid%}
+            <p class="introduction-of-solid"> <span class="title"> Introduction of solid: </span> {{nutrition.introduction_of_solid}}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
   </ul>
 </div>
 

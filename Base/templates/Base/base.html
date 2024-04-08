@@ -22,25 +22,7 @@
 
 </head>
 
-<body onload="pageStart()">
 
-
-  <div class="skeleton-loader">
-    <div class="skeleton-nav"></div>
-
-    <div class="skeleton-elments">
-      {% for i in "abcd" %}
-      <div class="sekeleton-item">
-        <div class="skeleton-thumbnail"></div>
-        <div class="skeleton-details">
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
   
   
   {% comment %} Navbar {% endcomment %}
@@ -115,6 +97,27 @@
     </div>
   </div>
 </nav>
+
+
+<body onload="pageStart()">
+
+
+  <div class="skeleton-loader">
+    <div class="skeleton-nav"></div>
+
+    <div class="skeleton-elments">
+      {% for i in "abcd" %}
+      <div class="sekeleton-item">
+        <div class="skeleton-thumbnail"></div>
+        <div class="skeleton-details">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 
 
   {% for message in messages %}

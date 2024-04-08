@@ -206,17 +206,42 @@ def home(request):
 def nutrition(request):
     context={}
     context['activeNutrition']='activate'
+
+
     if request.method == 'GET':
         if 'q' in request.GET:
             q = request.GET['q']
+
+            # Get the nutritions from the database and filter it with the query
             nutrition = Nutrition.objects.filter(nutrition_name__icontains=q)
             nutrition_desc = Nutrition.objects.filter(description__icontains=q)
             nutritions = nutrition.union(nutrition_desc)
-            if nutritions.count() == 0:
+
+
+            # Get Nutrition from gemini api
+            response = model.generate_content(f"""
+                generate nutrition information for {q} in a json format.
+                The information must contain nutrition_name, description, age_group, feeding_method, why_recomanded, introduction_of_solid, example_foods.
+                The example food must be suitable for the age group and must contain food name in[].
+                The description must be in 20 words.
+                Do not write  any othe header such as json or python and so on, so that i can covert it into json.
+                all the content must be in a [].
+                Do not generate any other imformation that is not related to nutrition.
+                only write the information in json string  format so that i can easily convert json to python dict.
+                """)
+            print(response.text)
+            print(type(response.text))
+
+            gemini_nutritions = json.loads(response.text)
+
+            if nutritions.count() == 0 and len(gemini_nutritions) == 0:
                 messages.error(request, 'No results found')
             else:
+                context['gemini_nutritions'] = gemini_nutritions
                 context['nutritions'] = nutritions
-                return render(request, 'Base/nutrition.html', context)
+
+            return render(request, 'Base/nutrition.html', context)
+
     nutritions = Nutrition.objects.all()
     context['nutritions'] = nutritions
     return render(request, 'Base/nutrition.html', context)
@@ -326,28 +351,23 @@ def hospital(request):
             response = model.generate_content(f"""
                 generate hospitals information for {q} in a json format.
                 The information must contain hospital_name, address, phone_number".
-                Do not write  any other information such as json or python and so on.
+                Do not write  any othe header such as json or python and so on, so that i can covert it into json.
+                all the content must be in a [].
                 only write the information in json string  format so that i can easily convert json to python dict.
                 """)
             print(response.text)
-            # print(type(response.text))
+            print(type(response.text))
 
             gemini_hospitals = json.loads(response.text)
-            if len(gemini_hospitals) == 1:
-                first_key = list(gemini_hospitals.keys())[0]
-                gemini_hospitals = gemini_hospitals[first_key]
-            else:
-                gemini_hospitals = [gemini_hospitals]
-
             print(gemini_hospitals)
-            # print(type(gemini_hospitals))
+            print(type(gemini_hospitals))
+            
+            context['gemini_hospitals'] = gemini_hospitals
 
-            if hospitals.count() == 0 and len(gemini_hospitals) == 0:
-                messages.error(request, 'No results found')
-            else:
-                context['hospitals'] = hospitals
-                context['gemini_hospitals'] = gemini_hospitals
-                return render(request, 'Base/hospital.html', context)
+            
+
+            context['hospitals'] = hospitals
+            return render(request, 'Base/hospital.html', context)
             
         
     hospital = Hospital.objects.all()

@@ -65,7 +65,7 @@
  }
  .btns {
    display: inline-block;
-   background:#FF0044 ;
+   background:#288bae ;
    color: #fff;
    padding: 6px 30px;
    margin: 30px 50px;
@@ -74,14 +74,14 @@
 }
 
  .btn:hover {
-    background: #FF7EA2;
+    background: #6fd6dd;
  }
  .btn1:hover {
    background: #FF7EA2;
 }
 
  .header {
-    background: #FFD4E0;
+    background: #cef1ff;
 
  }
 
