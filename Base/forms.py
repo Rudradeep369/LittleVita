@@ -3,12 +3,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 from .models import VaccineStatus, Child
+from django.contrib.auth.forms import AuthenticationForm
 
 
 class SignUpForm(UserCreationForm):
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class':'form-control signup-input'}))
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class':'form-control signup-input'}))
-    phone_number = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'signup-input'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class':'form-control input', 'placeholder': 'Enter Password'}))
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class':'form-control input', 'placeholder': 'Re-enter Password'}))
+    phone_number = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'input','placeholder': 'Enter your Phone Number'}))
 
     class Meta:
         model = User
@@ -22,11 +23,11 @@ class SignUpForm(UserCreationForm):
         }     
 
         widgets ={
-            'username':forms.TextInput(attrs={'id':'form-input1', "class":'signup-input'}),
-            'first_name':forms.TextInput(attrs={'id':'id_fname', "class":'signup-input'}),
-            'last_name':forms.TextInput(attrs={'id':'id_lname', "class":'signup-input'}),
-            'email':forms.TextInput(attrs={'id':'id_email', "class":'signup-input'}),
-            'phone_number':forms.TextInput(attrs={'id':'id_phone', "class":'signup-input'}),
+            'username':forms.TextInput(attrs={'id':'form-input1', "class":'input', 'placeholder': 'Enter your Username'}),
+            'first_name':forms.TextInput(attrs={'id':'id_fname', "class":'input', 'placeholder': 'Enter your First Name'}),
+            'last_name':forms.TextInput(attrs={'id':'id_lname', "class":'input', 'placeholder': 'Enter your Last Name'}),
+            'email':forms.TextInput(attrs={'id':'id_email', "class":'input', 'placeholder': 'Enter your Email Address'}),
+            # 'phone_number':forms.TextInput(attrs={'id':'id_phone', "class":'input', 'placeholder': 'Enter your Phone Number'}),
         }
 
 class VaccineStatusForm(forms.ModelForm):
@@ -53,3 +54,9 @@ class VaccineStatusForm(forms.ModelForm):
             'completed':forms.CheckboxInput(attrs={'class':'vaccine-form-input'}),
             'date_of_vaccination':forms.DateInput(attrs={'class':'vaccine-form-input', 'type': 'date'}),
         }
+
+
+# Overrider the AuthenticationForm 
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter your Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input', 'placeholder': 'Enter your Password'}))
