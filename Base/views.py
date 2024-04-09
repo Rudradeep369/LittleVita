@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import SignUpForm, VaccineStatusForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
+from .forms import CustomAuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -30,7 +30,7 @@ def loginUser(request):
         messages.info(request, 'You are already logged in')
         return redirect('home')
     if request.method=='POST':
-        form = AuthenticationForm(request, request.POST)
+        form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
             print("authenticating")
             username = form.cleaned_data['username']
@@ -48,7 +48,7 @@ def loginUser(request):
             messages.error(request, 'Invalid form Data. Try again!')
             return redirect('login')
             
-    form = AuthenticationForm()
+    form = CustomAuthenticationForm()
     context['form'] = form            
     return render(request, 'Base/login.html', context)
 
